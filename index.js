@@ -12,8 +12,7 @@ exports.handler = async (event) => {
 
   const request_promise = new Promise((resolve, reject) => {
     request(`${host}${path}`, function (error, response, body) {
-      if(response.statusCode != 200) {
-        console.log(`failed, will request ${`${host}/not_found`}`)
+      if(response.statusCode != 200) { // Return fallback route
         return request(`${host}/not_found`, function (error, response, body) {
           resolve({ body: body, headers: response.headers })
         })
