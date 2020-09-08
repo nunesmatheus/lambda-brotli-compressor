@@ -8,7 +8,7 @@ exports.handler = async (event) => {
   const accept_brotli = accept_encoding && accept_encoding.indexOf('br') !== -1
   const accept_gzip = accept_encoding && accept_encoding.indexOf('gzip') !== -1
 
-  const path = event.rawPath.replace('/default/vstiba-brotli-compressor', '')
+  const path = event.rawPath.replace(process.env.API_GATEWAY_PATH, '')
 
   const request_promise = new Promise((resolve, reject) => {
     request(`${host}${path}`, function (error, response, body) {
