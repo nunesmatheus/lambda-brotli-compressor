@@ -15,10 +15,10 @@ exports.handler = async (event, context, callback) => {
   const host_response = await download(`${host}${path}`)
   let body = host_response.body
 
-  if(file_extension && !['css', 'js'].includes(file_extension)) {
+  if(!file_extension || !['css', 'js'].includes(file_extension)) {
     buffer = Buffer.from(body)
     const response = {
-      statusCode: 200,
+      statusCode: host_response.status,
       body: buffer.toString('base64'),
       isBase64Encoded: true,
       headers: {
@@ -43,7 +43,7 @@ exports.handler = async (event, context, callback) => {
   }
 
   const response = {
-    statusCode: 200,
+    statusCode: host_response.status,
     isBase64Encoded: true,
     body: body.toString("base64"),
     headers: {
@@ -58,8 +58,7 @@ exports.handler = async (event, context, callback) => {
 function download(uri) {
   return new Promise((resolve, reject) => {
     request.get(uri, function (error, response, body) {
-      // data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-      resolve({ body: body, headers: response.headers })
+      resolve({ body: body, headers: response.headers, status: response.statusCode })
     })
   })
 }
