@@ -4,7 +4,7 @@ const request = require('request').defaults({ encoding: null });
 
 exports.handler = async (event, context, callback) => {
   const host = process.env.FILE_HOST
-  const accept_encoding = event.headers['Accept-Encoding']
+  const accept_encoding = event.headers['Accept-Encoding'] || event.headers['accept-encoding']
   const accept_brotli = accept_encoding && accept_encoding.indexOf('br') !== -1
   const accept_gzip = accept_encoding && accept_encoding.indexOf('gzip') !== -1
 
@@ -15,14 +15,15 @@ exports.handler = async (event, context, callback) => {
   const host_response = await download(`${host}${path}`)
   let body = host_response.body
 
-  if(!file_extension || !['css', 'js'].includes(file_extension)) {
+  if(file_extension && !['css', 'js'].includes(file_extension)) {
     buffer = Buffer.from(body)
     const response = {
       statusCode: host_response.status,
       body: buffer.toString('base64'),
       isBase64Encoded: true,
       headers: {
-        'Content-Type': host_response.headers["content-type"]
+        'Content-Type': host_response.headers["content-type"] || host_response.headers["Content-Type"],
+        'Cache-Control': host_response.headers["cache-control"] || host_response.headers["Cache-Control"] || 'max-age=86400'
       }
     }
     return response
@@ -47,9 +48,9 @@ exports.handler = async (event, context, callback) => {
     isBase64Encoded: true,
     body: body.toString("base64"),
     headers: {
-      'Content-Type': host_response.headers["content-type"],
+      'Content-Type': host_response.headers["content-type"] || host_response.headers["Content-Type"],
       'Content-Encoding': content_encoding,
-      'Cache-Control': host_response.headers["cache-control"]
+      'Cache-Control': host_response.headers["cache-control"] || host_response.headers["Cache-Control"] || 'max-age=86400'
     },
   };
   return response;
