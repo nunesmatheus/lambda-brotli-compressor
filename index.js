@@ -4,7 +4,7 @@ const request = require('request').defaults({ encoding: null });
 
 exports.handler = async (event, context, callback) => {
   const host = process.env.FILE_HOST
-  const accept_encoding = event.headers['accept-encoding']
+  const accept_encoding = event.headers['Accept-Encoding']
   const accept_brotli = accept_encoding && accept_encoding.indexOf('br') !== -1
   const accept_gzip = accept_encoding && accept_encoding.indexOf('gzip') !== -1
 
