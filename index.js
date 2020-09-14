@@ -23,7 +23,7 @@ exports.handler = async (event, context, callback) => {
       isBase64Encoded: true,
       headers: {
         'Content-Type': host_response.headers["content-type"] || host_response.headers["Content-Type"],
-        'Cache-Control': host_response.headers["cache-control"] || host_response.headers["Cache-Control"]
+        'Cache-Control': host_response.headers["cache-control"] || host_response.headers["Cache-Control"] || 'max-age=3600'
       }
     }
     return response
@@ -50,7 +50,7 @@ exports.handler = async (event, context, callback) => {
     headers: {
       'Content-Type': host_response.headers["content-type"] || host_response.headers["Content-Type"],
       'Content-Encoding': content_encoding,
-      'Cache-Control': host_response.headers["cache-control"] || host_response.headers["Cache-Control"]
+      'Cache-Control': host_response.headers["cache-control"] || host_response.headers["Cache-Control"] || 'max-age=3600'
     },
   };
   return response;
